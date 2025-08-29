@@ -1,20 +1,16 @@
+from mission2.member import Member
+
 
 class Attendance:
     def __init__(self):
         self.member_index_dict = {}
-        self.member_list = []
+        self.member_list: list[Member] = []
 
     def add_member(self, name):
         new_member_index = len(self.member_list)
-        new_member_id = new_member_index + 1
 
         self.member_index_dict[name] = new_member_index
-        new_member = {"name": name,
-                      "id": new_member_id,
-                      "grade": 0,
-                      "points": 0,
-                      "attend_num_wednesday": 0,
-                      "attend_num_weekend": 0}
+        new_member = Member(name)
         self.member_list.append(new_member)
 
 
@@ -27,49 +23,49 @@ class Attendance:
 
     def add_attendance_points(self, member, attendance_day):
         if attendance_day == "wednesday":
-            member["points"] += 3
-            member["attend_num_wednesday"] += 1
+            member.points += 3
+            member.attend_num_wednesday += 1
         elif attendance_day == "saturday":
-            member["points"] += 2
-            member["attend_num_weekend"] += 1
+            member.points += 2
+            member.attend_num_weekend += 1
         elif attendance_day == "sunday":
-            member["points"] += 2
-            member["attend_num_weekend"] += 1
+            member.points += 2
+            member.attend_num_weekend += 1
         else:
-            member["points"] += 1
+            member.points += 1
 
 
     def check_bonus_points(self):
         for member in self.member_list:
-            if member["attend_num_wednesday"] > 9:
-                member["points"] += 10
-            if member["attend_num_weekend"] > 9:
-                member["points"] += 10
+            if member.attend_num_wednesday > 9:
+                member.points += 10
+            if member.attend_num_weekend > 9:
+                member.points += 10
 
 
     def get_grade(self):
         for member in self.member_list:
-            if member["points"] >= 50:
-                member["grade"] = "GOLD"
-            elif member["points"] >= 30:
-                member["grade"] = "SILVER"
+            if member.points >= 50:
+                member.grade = "GOLD"
+            elif member.points >= 30:
+                member.grade = "SILVER"
             else:
-                member["grade"] = "NORMAL"
+                member.grade = "NORMAL"
 
-            print(f"NAME : {member["name"]}, POINT : {member["points"]}, GRADE : {member["grade"]}")
+            print(f"NAME : {member.name}, POINT : {member.points}, GRADE : {member.grade}")
 
 
     def remove_player(self):
         print("\nRemoved player")
         print("==============")
         for member in self.member_list:
-            if member["grade"] in ("GOLD", "SILVER"):
+            if member.grade in ("GOLD", "SILVER"):
                 continue
-            if member["attend_num_wednesday"] != 0:
+            if member.attend_num_wednesday != 0:
                 continue
-            if member["attend_num_weekend"] != 0:
+            if member.attend_num_weekend != 0:
                 continue
-            print(member["name"])
+            print(member.name)
 
 
     def input_attendance_data(self, read_data):
