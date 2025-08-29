@@ -1,4 +1,5 @@
 member_dict = {}
+member_list = []
 last_member_id = 0
 
 # dat[사용자ID][요일]
@@ -6,8 +7,8 @@ dat = [[0] * 100 for _ in range(100)]
 points = [0] * 100
 grade = [0] * 100
 member_names = [''] * 100
-wed = [0] * 100
-weeken = [0] * 100
+attend_num_wednesday = [0] * 100
+attend_num_weekend = [0] * 100
 
 def check_attendance(name, attendance_day):
     member_id = get_member_id(name)
@@ -27,7 +28,7 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "wednesday":
         index = 2
         add_point += 3
-        wed[member_id] += 1
+        attend_num_wednesday[member_id] += 1
     elif attendance_day == "thursday":
         index = 3
         add_point += 1
@@ -37,11 +38,11 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "saturday":
         index = 5
         add_point += 2
-        weeken[member_id] += 1
+        attend_num_weekend[member_id] += 1
     elif attendance_day == "sunday":
         index = 6
         add_point += 2
-        weeken[member_id] += 1
+        attend_num_weekend[member_id] += 1
     dat[member_id][index] += 1
     points[member_id] += add_point
 
@@ -56,11 +57,19 @@ def get_member_id(name):
 def add_member(name):
     global last_member_id
     last_member_id += 1
+    new_member = {}
     member_dict[name] = last_member_id
+    new_member["name"] = name
+    new_member["id"] = last_member_id
+    new_member["grade"] = 0
+    new_member["points"] = 0
+    new_member["attend_wednesday"] = 0
+    new_member["attend_weekend"] = 0
+    member_list.append(new_member)
     member_names[last_member_id] = name
 
 
-def input_file():
+def main():
     try:
         open_input_file()
 
@@ -79,8 +88,13 @@ def remove_player():
     print("\nRemoved player")
     print("==============")
     for member_id in range(1, last_member_id + 1):
-        if grade[member_id] not in (1, 2) and wed[member_id] == 0 and weeken[member_id] == 0:
-            print(member_names[member_id])
+        if grade[member_id] in (1, 2):
+            continue
+        if attend_num_wednesday[member_id] != 0:
+            continue
+        if attend_num_weekend[member_id] != 0:
+            continue
+        print(member_names[member_id])
 
 
 def get_grade(member_id):
@@ -117,8 +131,8 @@ def open_input_file():
             parts = line.strip().split()
             if len(parts) != 2:
                 break
-            check_attendance(parts[0], parts[1])
+            check_attendance(name=parts[0], attendance_day=parts[1])
 
 
 if __name__ == "__main__":
-    input_file()
+    main()
