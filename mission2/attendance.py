@@ -6,16 +6,16 @@ class Attendance:
         self.player_index_dict = {}
         self.player_list: list[Player] = []
 
-    def add_player(self, name):
+    def _add_player(self, name):
         new_player = Player(name)
         new_player_index = len(self.player_list)
 
         self.player_index_dict[name] = new_player_index
         self.player_list.append(new_player)
 
-    def get_player(self, name):
+    def _get_player(self, name):
         if name not in self.player_index_dict:
-            self.add_player(name)
+            self._add_player(name)
 
         return self.player_list[self.player_index_dict[name]]
 
@@ -31,17 +31,17 @@ class Attendance:
             print(player.name)
 
     def input_attendance_data(self, file_name):
-        read_data = self.open_input_file(file_name)
+        read_data = self._open_input_file(file_name)
 
         for data in read_data:
             parts = data.strip().split()
             if len(parts) != 2:
                 continue
 
-            player = self.get_player(name=parts[0])
+            player = self._get_player(name=parts[0])
             player.attend(attendance_day=parts[1])
 
-    def open_input_file(self, file_name):
+    def _open_input_file(self, file_name):
         read_file = []
         with open(file_name, encoding='utf-8') as f:
             for _ in range(500):

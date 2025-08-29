@@ -13,7 +13,7 @@ def basic_attendance():
     name_list = ["Kevin", "Sunny", "James", "Steven"]
     attendance = Attendance()
     for name in name_list:
-        attendance.add_player(name)
+        attendance._add_player(name)
     return attendance
 
 
@@ -28,7 +28,7 @@ def test_add_member():
     name_list = ["Kevin", "Sunny", "James", "Steven"]
     attendance = Attendance()
     for index, name in enumerate(name_list):
-        attendance.add_player(name)
+        attendance._add_player(name)
 
         assert attendance.player_index_dict[name] == index
         assert len(attendance.player_list) == index + 1
@@ -39,17 +39,17 @@ def test_add_member():
 def test_get_players(basic_attendance):
     attendance = basic_attendance
 
-    assert attendance.get_player("Kevin").name == "Kevin"
-    assert attendance.get_player("Sunny").name == "Sunny"
-    assert attendance.get_player("James").name == "James"
-    assert attendance.get_player("Steven").name == "Steven"
+    assert attendance._get_player("Kevin").name == "Kevin"
+    assert attendance._get_player("Sunny").name == "Sunny"
+    assert attendance._get_player("James").name == "James"
+    assert attendance._get_player("Steven").name == "Steven"
 
 
 def test_get_new_player():
     attendance = Attendance()
 
     assert attendance.player_list == []
-    assert attendance.get_player("Kevin").name == "Kevin"
+    assert attendance._get_player("Kevin").name == "Kevin"
     assert len(attendance.player_list) == 1
     assert attendance.player_index_dict == {"Kevin": 0}
 
@@ -75,8 +75,8 @@ def test_input_attendance_data(mocker: MockerFixture):
     attendance = Attendance()
     input_data = ["Umar monday", "Daisy tuesday", "Alice tuesday"]
     mocked_player = mock.Mock(spec=Player)
-    mocked_open_input_file = mocker.patch("attendance.Attendance.open_input_file", return_value=input_data)
-    mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
+    mocked_open_input_file = mocker.patch("attendance.Attendance._open_input_file", return_value=input_data)
+    mocked_get_player = mocker.patch("attendance.Attendance._get_player", return_value=mocked_player)
     mocker.patch("player.Player.attend")
 
     attendance.input_attendance_data("example.txt")
@@ -93,8 +93,8 @@ def test_input_attendance_wrong_data(mocker: MockerFixture):
     attendance = Attendance()
     input_data = ["Umar monday", "Daisy", "Alice tuesday"]
     mocked_player = mock.Mock(spec=Player)
-    mocked_open_input_file = mocker.patch("attendance.Attendance.open_input_file", return_value=input_data)
-    mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
+    mocked_open_input_file = mocker.patch("attendance.Attendance._open_input_file", return_value=input_data)
+    mocked_get_player = mocker.patch("attendance.Attendance._get_player", return_value=mocked_player)
     mocker.patch("player.Player.attend")
 
     attendance.input_attendance_data("example.txt")
@@ -105,3 +105,11 @@ def test_input_attendance_wrong_data(mocker: MockerFixture):
     assert mocked_player.attend.call_count == len(input_data) - 1
     mocked_player.attend.assert_has_calls([call(attendance_day="monday"), call(attendance_day="tuesday")])
 
+
+def test_open_input_file(mocker: MockerFixture):
+    mocked_open = mocker.patch("builtins.open")
+
+    attendance = Attendance()
+    attendance._open_input_file("example.txt")
+
+    assert mocked_open.call_count == 1
