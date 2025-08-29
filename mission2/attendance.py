@@ -6,24 +6,23 @@ class Attendance:
         self.player_index_dict = {}
         self.player_list: list[Player] = []
 
-    def add_member(self, name):
-        new_member = Player(name)
-        new_member_index = len(self.player_list)
+    def add_player(self, name):
+        new_player = Player(name)
+        new_player_index = len(self.player_list)
 
-        self.player_index_dict[name] = new_member_index
-        self.player_list.append(new_member)
+        self.player_index_dict[name] = new_player_index
+        self.player_list.append(new_player)
 
-    def get_member(self, name):
+    def get_player(self, name):
         if name not in self.player_index_dict:
-            self.add_member(name)
+            self.add_player(name)
 
         return self.player_list[self.player_index_dict[name]]
 
-    def get_grade(self):
+    def manage_players(self):
         for player in self.player_list:
             player.update_grade()
 
-    def remove_player(self):
         print("\nRemoved player")
         print("==============")
         for player in self.player_list:
@@ -37,7 +36,7 @@ class Attendance:
             if len(parts) != 2:
                 continue
 
-            player = self.get_member(name=parts[0])
+            player = self.get_player(name=parts[0])
             player.attend(attendance_day=parts[1])
 
 
@@ -60,9 +59,7 @@ def main():
         attendance = Attendance()
         attendance.input_attendance_data(attendance_data)
 
-        attendance.get_grade()
-
-        attendance.remove_player()
+        attendance.manage_players()
 
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다.")
