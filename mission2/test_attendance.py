@@ -4,6 +4,13 @@ from pytest_mock import MockerFixture
 from attendance import Attendance
 
 
+def test_init():
+    attendance = Attendance()
+
+    assert attendance.player_index_dict == {}
+    assert attendance.player_list == []
+
+
 def test_add_member(mocker: MockerFixture):
     name_list = ["Kevin", "Sunny", "James", "Steven"]
     mocker.patch('player.Player', return_value=name_list)
