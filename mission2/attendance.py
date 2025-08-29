@@ -31,15 +31,7 @@ class Attendance:
 
     def get_grade(self):
         for member in self.member_list:
-            if member.points >= 50:
-                member.grade = "GOLD"
-            elif member.points >= 30:
-                member.grade = "SILVER"
-            else:
-                member.grade = "NORMAL"
-
-            print(f"NAME : {member.name}, POINT : {member.points}, GRADE : {member.grade}")
-
+            member.update_grade()
 
     def remove_player(self):
         print("\nRemoved player")

@@ -21,3 +21,15 @@ class Member:
             self.attend_num_weekend += 1
         else:
             self.points += 1
+
+
+    def update_grade(self):
+        if self.points >= 50:
+            self.grade = "GOLD"
+        elif self.points >= 30:
+            self.grade = "SILVER"
+        else:
+            self.grade = "NORMAL"
+
+        print(f"NAME : {self.name}, POINT : {self.points}, GRADE : {self.grade}")
+
