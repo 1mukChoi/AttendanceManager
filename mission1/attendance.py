@@ -1,41 +1,42 @@
-from pickle import BINPUT
-
-member_dict = {}
+member_index_dict = {}
 member_list = []
 last_member_id = 0
 
 
 def add_member(name):
     global last_member_id
-    last_member_id += 1
+    last_member_index = last_member_id
+    member_index_dict[name] = last_member_index
+
+    new_member_id = last_member_id + 1
     new_member = {}
-    member_dict[name] = last_member_id
     new_member["name"] = name
-    new_member["id"] = last_member_id
+    new_member["id"] = new_member_id
     new_member["grade"] = 0
     new_member["points"] = 0
     new_member["attend_num_wednesday"] = 0
     new_member["attend_num_weekend"] = 0
     member_list.append(new_member)
 
+    last_member_id  = new_member_id
 
-def get_member_id(name):
-    if name not in member_dict:
+
+def get_member(name):
+    if name not in member_index_dict:
         add_member(name)
 
-    return member_dict[name]
+    return member_list[member_index_dict[name]]
 
 
 def check_attendance(name, attendance_day):
-    member_id = get_member_id(name)
+    member = get_member(name)
 
-    add_attendance_points(attendance_day, member_id)
+    add_attendance_points(attendance_day, member)
 
 
-def add_attendance_points(attendance_day, member_id):
+def add_attendance_points(attendance_day, member):
     add_point = 0
     index = 0
-    member_list_index = member_id - 1
     if attendance_day == "monday":
         index = 0
         add_point += 1
@@ -45,7 +46,7 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "wednesday":
         index = 2
         add_point += 3
-        member_list[member_list_index]["attend_num_wednesday"] += 1
+        member["attend_num_wednesday"] += 1
     elif attendance_day == "thursday":
         index = 3
         add_point += 1
@@ -55,12 +56,12 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "saturday":
         index = 5
         add_point += 2
-        member_list[member_list_index]["attend_num_weekend"] += 1
+        member["attend_num_weekend"] += 1
     elif attendance_day == "sunday":
         index = 6
         add_point += 2
-        member_list[member_list_index]["attend_num_weekend"] += 1
-    member_list[member_list_index]["points"] += add_point
+        member["attend_num_weekend"] += 1
+    member["points"] += add_point
 
 
 def check_bonus_points():
