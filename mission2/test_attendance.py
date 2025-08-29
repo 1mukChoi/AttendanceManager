@@ -4,7 +4,7 @@ from unittest.mock import Mock, call
 import pytest
 from pytest_mock import MockerFixture
 
-from attendance import Attendance
+from attendance import Attendance, main
 from player import Player
 
 
@@ -113,3 +113,22 @@ def test_open_input_file(mocker: MockerFixture):
     attendance._open_input_file("example.txt")
 
     assert mocked_open.call_count == 1
+
+
+def test_main(mocker: MockerFixture):
+    mocked_input_attendance_data = mocker.patch("attendance.Attendance.input_attendance_data")
+    mocked_manage_players = mocker.patch("attendance.Attendance.manage_players")
+
+    main()
+
+    mocked_input_attendance_data.assert_called_once()
+    mocked_manage_players.assert_called_once()
+
+
+def test_main_except(mocker: MockerFixture):
+    mocker.patch("attendance.Attendance.input_attendance_data", side_effect=FileNotFoundError)
+    mocked_print = mocker.patch("builtins.print")
+
+    main()
+
+    mocked_print.assert_called_once_with("파일을 찾을 수 없습니다.")
