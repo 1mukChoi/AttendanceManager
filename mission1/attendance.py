@@ -4,7 +4,6 @@ last_member_id = 0
 
 # dat[사용자ID][요일]
 dat = [[0] * 100 for _ in range(100)]
-points = [0] * 100
 grade = [0] * 100
 attend_num_wednesday = [0] * 100
 attend_num_weekend = [0] * 100
@@ -39,6 +38,7 @@ def check_attendance(name, attendance_day):
 def add_attendance_points(attendance_day, member_id):
     add_point = 0
     index = 0
+    member_list_index = member_id - 1
     if attendance_day == "monday":
         index = 0
         add_point += 1
@@ -64,26 +64,27 @@ def add_attendance_points(attendance_day, member_id):
         add_point += 2
         attend_num_weekend[member_id] += 1
     dat[member_id][index] += 1
-    points[member_id] += add_point
+    member_list[member_list_index]["points"] += add_point
 
 
-def check_bonus_points(i):
-    if dat[i][2] > 9:
-        points[i] += 10
-    if dat[i][5] + dat[i][6] > 9:
-        points[i] += 10
+def check_bonus_points(member_id):
+    member_list_index = member_id - 1
+    if dat[member_id][2] > 9:
+        member_list[member_list_index]["points"] += 10
+    if dat[member_id][5] + dat[member_id][6] > 9:
+        member_list[member_list_index]["points"] += 10
 
 
 def get_grade(member_id):
-    if points[member_id] >= 50:
+    member_list_index = member_id - 1
+    if member_list[member_list_index]["points"] >= 50:
         grade[member_id] = 1
-    elif points[member_id] >= 30:
+    elif member_list[member_list_index]["points"] >= 30:
         grade[member_id] = 2
     else:
         grade[member_id] = 0
 
-    member_list_index = member_id - 1
-    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {points[member_id]}, GRADE : ", end="")
+    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {member_list[member_list_index]["points"]}, GRADE : ", end="")
 
     if grade[member_id] == 1:
         print("GOLD")
