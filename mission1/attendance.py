@@ -1,3 +1,5 @@
+from pickle import BINPUT
+
 member_dict = {}
 member_list = []
 last_member_id = 0
@@ -96,21 +98,31 @@ def remove_player():
         print(member_list[member_list_index]["name"])
 
 
+def input_attendance_data(read_data):
+    for data in read_data:
+        parts = data.strip().split()
+        if len(parts) != 2:
+            continue
+
+        check_attendance(name=parts[0], attendance_day=parts[1])
+
+
 def open_input_file():
+    read_file = []
     with open("attendance_weekday_500.txt", encoding='utf-8') as f:
         for _ in range(500):
             line = f.readline()
             if not line:
                 break
-            parts = line.strip().split()
-            if len(parts) != 2:
-                break
-            check_attendance(name=parts[0], attendance_day=parts[1])
+            read_file.append(line)
+
+    return read_file
 
 
 def main():
     try:
-        open_input_file()
+        attendance_data = open_input_file()
+        input_attendance_data(attendance_data)
 
         for member_id in range(1, last_member_id + 1):
             check_bonus_points(member_id)
