@@ -4,9 +4,9 @@ last_member_id = 0
 
 # dat[사용자ID][요일]
 dat = [[0] * 100 for _ in range(100)]
-grade = [0] * 100
 attend_num_wednesday = [0] * 100
 attend_num_weekend = [0] * 100
+
 
 def add_member(name):
     global last_member_id
@@ -78,27 +78,21 @@ def check_bonus_points(member_id):
 def get_grade(member_id):
     member_list_index = member_id - 1
     if member_list[member_list_index]["points"] >= 50:
-        grade[member_id] = 1
+        member_list[member_list_index]["grade"] = "GOLD"
     elif member_list[member_list_index]["points"] >= 30:
-        grade[member_id] = 2
+        member_list[member_list_index]["grade"] = "SILVER"
     else:
-        grade[member_id] = 0
+        member_list[member_list_index]["grade"] = "NORMAL"
 
-    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {member_list[member_list_index]["points"]}, GRADE : ", end="")
-
-    if grade[member_id] == 1:
-        print("GOLD")
-    elif grade[member_id] == 2:
-        print("SILVER")
-    else:
-        print("NORMAL")
+    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {member_list[member_list_index]["points"]}, GRADE : {member_list[member_list_index]["grade"]}")
 
 
 def remove_player():
     print("\nRemoved player")
     print("==============")
     for member_id in range(1, last_member_id + 1):
-        if grade[member_id] in (1, 2):
+        member_list_index = member_id - 1
+        if member_list[member_list_index]["grade"] in ("GOLD", "SILVER"):
             continue
         if attend_num_wednesday[member_id] != 0:
             continue
