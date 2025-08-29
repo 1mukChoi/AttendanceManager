@@ -23,13 +23,7 @@ def get_member(name):
     return member_list[member_index_dict[name]]
 
 
-def check_attendance(name, attendance_day):
-    member = get_member(name)
-
-    add_attendance_points(attendance_day, member)
-
-
-def add_attendance_points(attendance_day, member):
+def add_attendance_points(member, attendance_day):
     if attendance_day == "wednesday":
         member["points"] += 3
         member["attend_num_wednesday"] += 1
@@ -82,8 +76,10 @@ def input_attendance_data(read_data):
         if len(parts) != 2:
             continue
 
-        check_attendance(name=parts[0], attendance_day=parts[1])
+        member = get_member(name=parts[0])
+        add_attendance_points(member, attendance_day=parts[1])
 
+    check_bonus_points()
 
 def open_input_file():
     read_file = []
@@ -102,8 +98,6 @@ def main():
         attendance_data = open_input_file()
 
         input_attendance_data(attendance_data)
-
-        check_bonus_points()
 
         get_grade()
 
