@@ -11,27 +11,36 @@ class Player:
         self._points = 0
         self._bonus_points = 0
         self._grader: GraderBase = self._get_grader()
-        self.attend_num_wednesday = 0
-        self.attend_num_weekend = 0
+        self.attend_num = {"monday": 0,
+                           "tuesday": 0,
+                           "wednesday": 0,
+                           "thursday": 0,
+                           "friday": 0,
+                           "saturday": 0,
+                           "sunday": 0}
 
     def _get_grader(self):
         return GraderNormal()
 
     def attend(self, attendance_day):
-        if attendance_day == "wednesday":
-            self._points += 3
-            self.attend_num_wednesday += 1
-        elif attendance_day == "saturday":
-            self._points += 2
-            self.attend_num_weekend += 1
-        elif attendance_day == "sunday":
-            self._points += 2
-            self.attend_num_weekend += 1
-        else:
-            self._points += 1
+        self.attend_num[attendance_day] += 1
+
+    def _calc_points(self):
+        self._points = 0
+        for attendance_day, num_days in self.attend_num.items():
+            if attendance_day == "wednesday":
+                self._points += 3 * num_days
+            elif attendance_day == "saturday":
+                self._points += 2 * num_days
+            elif attendance_day == "sunday":
+                self._points += 2 * num_days
+            else:
+                self._points += 1 * num_days
+
+        self._check_bonus_points()
 
     def update_grade(self):
-        self._check_bonus_points()
+        self._calc_points()
 
         self._grader.set_grade(self.total_points)
 
@@ -39,9 +48,9 @@ class Player:
 
     def _check_bonus_points(self):
         self._bonus_points = 0
-        if self.attend_num_wednesday > 9:
+        if self.attend_num["wednesday"] > 9:
             self._bonus_points += 10
-        if self.attend_num_weekend > 9:
+        if self.attend_num["saturday"] + self.attend_num["sunday"] > 9:
             self._bonus_points += 10
 
     def _total_points(self):
@@ -54,9 +63,9 @@ class Player:
     def is_player_removed(self):
         if not self._grader.is_removed():
             return False
-        if self.attend_num_wednesday != 0:
+        if self.attend_num["wednesday"] != 0:
             return False
-        if self.attend_num_weekend != 0:
+        if self.attend_num["saturday"] + self.attend_num["sunday"] != 0:
             return False
 
         return True

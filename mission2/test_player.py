@@ -13,37 +13,42 @@ def test_member_init(make_member):
     assert member.id == Player.LAST_ID
     assert member._points == 0
     assert member._grader.grade == "NORMAL"
-    assert member.attend_num_wednesday == 0
-    assert member.attend_num_weekend == 0
+    assert member.attend_num == {"monday": 0,
+                           "tuesday": 0,
+                           "wednesday": 0,
+                           "thursday": 0,
+                           "friday": 0,
+                           "saturday": 0,
+                           "sunday": 0}
 
-@pytest.mark.parametrize("attendance_day, points, attend_num_wednesday, attend_num_weekend", [("monday", 1, 0, 0), ("tuesday", 1, 0, 0), ("wednesday", 3, 1, 0), ("thursday", 1, 0, 0), ("friday", 1, 0, 0), ("saturday", 2, 0, 1), ("sunday", 2, 0, 1)])
-def test_attend(make_member, attendance_day, points, attend_num_wednesday, attend_num_weekend):
+
+@pytest.mark.parametrize("attendance_day", ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])
+def test_attend(make_member, attendance_day):
     member = make_member
     member.attend(attendance_day)
-    assert member._points == points
-    assert member.attend_num_wednesday == attend_num_wednesday
-    assert member.attend_num_weekend == attend_num_weekend
+    assert member.attend_num[attendance_day] == 1
 
 
 @pytest.mark.parametrize("points, grade", [(0, "NORMAL"), (10, "NORMAL"), (20, "NORMAL"), (30, "SILVER"), (40, "SILVER"), (50, "GOLD"), (100, "GOLD")])
 def test_update_grade(make_member, points, grade, mocker: MockerFixture):
     member = make_member
+    mocked_calc_points = mocker.patch("player.Player._calc_points")
     member._points = points
     mocked_print = mocker.patch("builtins.print")
-    mocked_check_bonus_points = mocker.patch("player.Player._check_bonus_points")
 
     member.update_grade()
 
     assert member._grader.grade == grade
+    mocked_calc_points.assert_called_once()
     mocked_print.assert_called_with(f"NAME : {member.name}, POINT : {member.total_points}, GRADE : {member._grader.grade}")
-    mocked_check_bonus_points.assert_called_once()
 
 
-@pytest.mark.parametrize("attend_num_wednesday, attend_num_weekend, bonus_points", [(0, 9, 0), (9, 9, 0), (9, 0, 0), (19, 9, 10), (9, 19, 10), (19, 19, 20), (119, 119, 20)])
-def test_check_bonus_points(make_member, attend_num_wednesday, attend_num_weekend, bonus_points):
+@pytest.mark.parametrize("attend_num_wednesday, attend_num_saturday, attend_num_sunday, bonus_points", [(0, 9, 0, 0), (9, 9, 0, 0), (9, 0, 9, 0), (19, 9, 0, 10), (19, 9, 9, 20), (9, 19, 0, 10), (19, 0, 19, 20), (119, 119, 0, 20)])
+def test_check_bonus_points(make_member, attend_num_wednesday, attend_num_saturday, attend_num_sunday, bonus_points):
     member = make_member
-    member.attend_num_wednesday = attend_num_wednesday
-    member.attend_num_weekend = attend_num_weekend
+    member.attend_num["wednesday"] = attend_num_wednesday
+    member.attend_num["saturday"] = attend_num_saturday
+    member.attend_num["sunday"] = attend_num_sunday
 
     member._check_bonus_points()
 
@@ -63,7 +68,8 @@ def test_total_points(make_member, points, bonus_points, total_points):
 def test_is_player_removed(make_member, is_removed_grade, attend_num_wednesday, attend_num_weekend, result, mocker: MockerFixture):
     member = make_member
     mocker.patch("grader.GraderNormal.is_removed", return_value=is_removed_grade)
-    member.attend_num_wednesday = attend_num_wednesday
-    member.attend_num_weekend = attend_num_weekend
+    member.attend_num["wednesday"] = attend_num_wednesday
+    member.attend_num["saturday"] = int(attend_num_weekend/2)
+    member.attend_num["sunday"] = attend_num_weekend - member.attend_num["saturday"]
 
     assert member.is_player_removed() == result
