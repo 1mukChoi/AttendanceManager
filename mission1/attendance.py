@@ -1,73 +1,73 @@
-member_index_dict = {}
-member_list = []
+player_index_dict = {}
+player_list = []
 
 
-def add_member(name):
-    new_member_index = len(member_list)
-    new_member_id = new_member_index + 1
+def add_player(name):
+    new_player_index = len(player_list)
+    new_player_id = new_player_index + 1
 
-    member_index_dict[name] = new_member_index
-    new_member = {"name": name,
-                  "id": new_member_id,
-                  "grade": 0,
+    player_index_dict[name] = new_player_index
+    new_player = {"name": name,
+                  "id": new_player_id,
                   "points": 0,
+                  "grade": "NORMAL",
                   "attend_num_wednesday": 0,
                   "attend_num_weekend": 0}
-    member_list.append(new_member)
+    player_list.append(new_player)
 
 
-def get_member(name):
-    if name not in member_index_dict:
-        add_member(name)
+def get_player(name):
+    if name not in player_index_dict:
+        add_player(name)
 
-    return member_list[member_index_dict[name]]
+    return player_list[player_index_dict[name]]
 
 
-def add_attendance_points(member, attendance_day):
+def add_attendance_points(player, attendance_day):
     if attendance_day == "wednesday":
-        member["points"] += 3
-        member["attend_num_wednesday"] += 1
+        player["points"] += 3
+        player["attend_num_wednesday"] += 1
     elif attendance_day == "saturday":
-        member["points"] += 2
-        member["attend_num_weekend"] += 1
+        player["points"] += 2
+        player["attend_num_weekend"] += 1
     elif attendance_day == "sunday":
-        member["points"] += 2
-        member["attend_num_weekend"] += 1
+        player["points"] += 2
+        player["attend_num_weekend"] += 1
     else:
-        member["points"] += 1
+        player["points"] += 1
 
 
 def check_bonus_points():
-    for member in member_list:
-        if member["attend_num_wednesday"] > 9:
-            member["points"] += 10
-        if member["attend_num_weekend"] > 9:
-            member["points"] += 10
+    for player in player_list:
+        if player["attend_num_wednesday"] > 9:
+            player["points"] += 10
+        if player["attend_num_weekend"] > 9:
+            player["points"] += 10
 
 
 def get_grade():
-    for member in member_list:
-        if member["points"] >= 50:
-            member["grade"] = "GOLD"
-        elif member["points"] >= 30:
-            member["grade"] = "SILVER"
+    for player in player_list:
+        if player["points"] >= 50:
+            player["grade"] = "GOLD"
+        elif player["points"] >= 30:
+            player["grade"] = "SILVER"
         else:
-            member["grade"] = "NORMAL"
+            player["grade"] = "NORMAL"
 
-        print(f"NAME : {member["name"]}, POINT : {member["points"]}, GRADE : {member["grade"]}")
+        print(f"NAME : {player["name"]}, POINT : {player["points"]}, GRADE : {player["grade"]}")
 
 
 def remove_player():
     print("\nRemoved player")
     print("==============")
-    for member in member_list:
-        if member["grade"] in ("GOLD", "SILVER"):
+    for player in player_list:
+        if player["grade"] in ("GOLD", "SILVER"):
             continue
-        if member["attend_num_wednesday"] != 0:
+        if player["attend_num_wednesday"] != 0:
             continue
-        if member["attend_num_weekend"] != 0:
+        if player["attend_num_weekend"] != 0:
             continue
-        print(member["name"])
+        print(player["name"])
 
 
 def input_attendance_data(read_data):
@@ -76,8 +76,8 @@ def input_attendance_data(read_data):
         if len(parts) != 2:
             continue
 
-        member = get_member(name=parts[0])
-        add_attendance_points(member, attendance_day=parts[1])
+        player = get_player(name=parts[0])
+        add_attendance_points(player, attendance_day=parts[1])
 
     check_bonus_points()
 

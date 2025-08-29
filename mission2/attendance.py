@@ -1,41 +1,41 @@
-from mission2.member import Member
+from mission2.player import Player
 
 
 class Attendance:
     def __init__(self):
-        self.member_index_dict = {}
-        self.member_list: list[Member] = []
+        self.player_index_dict = {}
+        self.player_list: list[Player] = []
 
     def add_member(self, name):
-        new_member = Member(name)
-        new_member_index = len(self.member_list)
+        new_member = Player(name)
+        new_member_index = len(self.player_list)
 
-        self.member_index_dict[name] = new_member_index
-        self.member_list.append(new_member)
+        self.player_index_dict[name] = new_member_index
+        self.player_list.append(new_member)
 
 
     def get_member(self, name):
-        if name not in self.member_index_dict:
+        if name not in self.player_index_dict:
             self.add_member(name)
 
-        return self.member_list[self.member_index_dict[name]]
+        return self.player_list[self.player_index_dict[name]]
 
 
     def get_grade(self):
-        for member in self.member_list:
-            member.update_grade()
+        for player in self.player_list:
+            player.update_grade()
 
     def remove_player(self):
         print("\nRemoved player")
         print("==============")
-        for member in self.member_list:
-            if member.grade in ("GOLD", "SILVER"):
+        for player in self.player_list:
+            if player.grade in ("GOLD", "SILVER"):
                 continue
-            if member.attend_num_wednesday != 0:
+            if player.attend_num_wednesday != 0:
                 continue
-            if member.attend_num_weekend != 0:
+            if player.attend_num_weekend != 0:
                 continue
-            print(member.name)
+            print(player.name)
 
 
     def input_attendance_data(self, read_data):
@@ -44,8 +44,8 @@ class Attendance:
             if len(parts) != 2:
                 continue
 
-            member = self.get_member(name=parts[0])
-            member.attend(attendance_day=parts[1])
+            player = self.get_member(name=parts[0])
+            player.attend(attendance_day=parts[1])
 
 
 def open_input_file():

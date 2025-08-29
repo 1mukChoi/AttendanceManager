@@ -1,10 +1,10 @@
-class Member:
+class Player:
     LAST_ID = 0
 
     def __init__(self, name=None):
-        Member.LAST_ID += 1
+        Player.LAST_ID += 1
         self.name = name
-        self.id = Member.LAST_ID
+        self.id = Player.LAST_ID
         self._points = 0
         self._bonus_points = 0
         self.grade = "NORMAL"

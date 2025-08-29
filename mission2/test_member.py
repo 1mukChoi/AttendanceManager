@@ -1,16 +1,16 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from mission2.member import Member
+from mission2.player import Player
 
 @pytest.fixture
 def make_member():
-    return Member("Kevin")
+    return Player("Kevin")
 
 def test_member_init(make_member):
     member = make_member
     assert member.name == "Kevin"
-    assert member.id == Member.LAST_ID
+    assert member.id == Player.LAST_ID
     assert member._points == 0
     assert member.grade == "NORMAL"
     assert member.attend_num_wednesday == 0
