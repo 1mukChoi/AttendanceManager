@@ -1,4 +1,4 @@
-from mission2.player import Player
+from player import Player
 
 
 class Attendance:

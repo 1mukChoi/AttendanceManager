@@ -1,10 +1,7 @@
-from pickle import FALSE
-from xmlrpc.client import Fault
-
 import pytest
 from pytest_mock import MockerFixture
 
-from mission2.player import Player
+from player import Player
 
 @pytest.fixture
 def make_member():
@@ -33,7 +30,7 @@ def test_update_grade(make_member, points, grade, mocker: MockerFixture):
     member = make_member
     member._points = points
     mocked_print = mocker.patch("builtins.print")
-    mocked_check_bonus_points = mocker.patch("mission2.player.Player._check_bonus_points")
+    mocked_check_bonus_points = mocker.patch("player.Player._check_bonus_points")
 
     member.update_grade()
 
