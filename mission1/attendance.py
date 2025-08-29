@@ -4,8 +4,6 @@ last_member_id = 0
 
 # dat[사용자ID][요일]
 dat = [[0] * 100 for _ in range(100)]
-attend_num_wednesday = [0] * 100
-attend_num_weekend = [0] * 100
 
 
 def add_member(name):
@@ -17,8 +15,8 @@ def add_member(name):
     new_member["id"] = last_member_id
     new_member["grade"] = 0
     new_member["points"] = 0
-    new_member["attend_wednesday"] = 0
-    new_member["attend_weekend"] = 0
+    new_member["attend_num_wednesday"] = 0
+    new_member["attend_num_weekend"] = 0
     member_list.append(new_member)
 
 
@@ -48,7 +46,7 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "wednesday":
         index = 2
         add_point += 3
-        attend_num_wednesday[member_id] += 1
+        member_list[member_list_index]["attend_num_wednesday"] += 1
     elif attendance_day == "thursday":
         index = 3
         add_point += 1
@@ -58,11 +56,11 @@ def add_attendance_points(attendance_day, member_id):
     elif attendance_day == "saturday":
         index = 5
         add_point += 2
-        attend_num_weekend[member_id] += 1
+        member_list[member_list_index]["attend_num_weekend"] += 1
     elif attendance_day == "sunday":
         index = 6
         add_point += 2
-        attend_num_weekend[member_id] += 1
+        member_list[member_list_index]["attend_num_weekend"] += 1
     dat[member_id][index] += 1
     member_list[member_list_index]["points"] += add_point
 
@@ -94,9 +92,9 @@ def remove_player():
         member_list_index = member_id - 1
         if member_list[member_list_index]["grade"] in ("GOLD", "SILVER"):
             continue
-        if attend_num_wednesday[member_id] != 0:
+        if member_list[member_list_index]["attend_num_wednesday"] != 0:
             continue
-        if attend_num_weekend[member_id] != 0:
+        if member_list[member_list_index]["attend_num_weekend"] != 0:
             continue
         member_list_index = member_id - 1
         print(member_list[member_list_index]["name"])
