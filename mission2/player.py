@@ -25,7 +25,7 @@ class Player:
             self._points += 1
 
     def update_grade(self):
-        self.check_bonus_points()
+        self._check_bonus_points()
 
         if self.total_points >= 50:
             self.grade = "GOLD"
@@ -36,7 +36,7 @@ class Player:
 
         print(f"NAME : {self.name}, POINT : {self.total_points}, GRADE : {self.grade}")
 
-    def check_bonus_points(self):
+    def _check_bonus_points(self):
         self._bonus_points = 0
         if self.attend_num_wednesday > 9:
             self._bonus_points += 10
@@ -49,3 +49,13 @@ class Player:
     @property
     def total_points(self):
         return self._total_points()
+
+    def is_player_removed(self):
+        if self.grade in ("GOLD", "SILVER"):
+            return False
+        if self.attend_num_wednesday != 0:
+            return False
+        if self.attend_num_weekend != 0:
+            return False
+
+        return True

@@ -1,3 +1,6 @@
+from pickle import FALSE
+from xmlrpc.client import Fault
+
 import pytest
 from pytest_mock import MockerFixture
 
@@ -30,12 +33,12 @@ def test_update_grade(make_member, points, grade, mocker: MockerFixture):
     member = make_member
     member._points = points
     mocked_print = mocker.patch("builtins.print")
-    mocked_check_bonus_points = mocker.patch("mission2.member.Member.check_bonus_points")
+    mocked_check_bonus_points = mocker.patch("mission2.player.Player._check_bonus_points")
 
     member.update_grade()
 
     assert member.grade == grade
-    mocked_print.assert_called_with(f"NAME : {member.name}, POINT : {member._points}, GRADE : {member.grade}")
+    mocked_print.assert_called_with(f"NAME : {member.name}, POINT : {member.total_points}, GRADE : {member.grade}")
     mocked_check_bonus_points.assert_called_once()
 
 
@@ -45,7 +48,7 @@ def test_check_bonus_points(make_member, attend_num_wednesday, attend_num_weeken
     member.attend_num_wednesday = attend_num_wednesday
     member.attend_num_weekend = attend_num_weekend
 
-    member.check_bonus_points()
+    member._check_bonus_points()
 
     assert member._bonus_points == bonus_points
 
@@ -56,3 +59,14 @@ def test_total_points(make_member, points, bonus_points, total_points):
     member._bonus_points = bonus_points
 
     assert member.total_points == total_points
+
+@pytest.mark.parametrize("grade, attend_num_wednesday, attend_num_weekend, result", [("GOLD", 0, 0, False), ("GOLD", 10, 0, False), ("GOLD", 0, 10, False), ("GOLD", 10, 10, False),
+                                                                                     ("SILVER", 0, 0, False), ("SILVER", 10, 0, False), ("SILVER", 0, 10, False), ("SILVER", 10, 10, False),
+                                                                                     ("NORMAL", 0, 0, True), ("NORMAL", 10, 0, False), ("NORMAL", 0, 10, False), ("NORMAL", 10, 10, False)])
+def test_is_player_removed(make_member, grade, attend_num_wednesday, attend_num_weekend, result):
+    member = make_member
+    member.grade = grade
+    member.attend_num_wednesday = attend_num_wednesday
+    member.attend_num_weekend = attend_num_weekend
+
+    assert member.is_player_removed() == result

@@ -13,13 +13,11 @@ class Attendance:
         self.player_index_dict[name] = new_member_index
         self.player_list.append(new_member)
 
-
     def get_member(self, name):
         if name not in self.player_index_dict:
             self.add_member(name)
 
         return self.player_list[self.player_index_dict[name]]
-
 
     def get_grade(self):
         for player in self.player_list:
@@ -29,14 +27,9 @@ class Attendance:
         print("\nRemoved player")
         print("==============")
         for player in self.player_list:
-            if player.grade in ("GOLD", "SILVER"):
-                continue
-            if player.attend_num_wednesday != 0:
-                continue
-            if player.attend_num_weekend != 0:
+            if not player.is_player_removed():
                 continue
             print(player.name)
-
 
     def input_attendance_data(self, read_data):
         for data in read_data:
