@@ -30,7 +30,9 @@ class Attendance:
                 continue
             print(player.name)
 
-    def input_attendance_data(self, read_data):
+    def input_attendance_data(self, file_name):
+        read_data = self.open_input_file(file_name)
+
         for data in read_data:
             parts = data.strip().split()
             if len(parts) != 2:
@@ -39,25 +41,22 @@ class Attendance:
             player = self.get_player(name=parts[0])
             player.attend(attendance_day=parts[1])
 
+    def open_input_file(self, file_name):
+        read_file = []
+        with open(file_name, encoding='utf-8') as f:
+            for _ in range(500):
+                line = f.readline()
+                if not line:
+                    break
+                read_file.append(line)
 
-def open_input_file():
-    read_file = []
-    with open("attendance_weekday_500.txt", encoding='utf-8') as f:
-        for _ in range(500):
-            line = f.readline()
-            if not line:
-                break
-            read_file.append(line)
-
-    return read_file
+        return read_file
 
 
 def main():
     try:
-        attendance_data = open_input_file()
-
         attendance = Attendance()
-        attendance.input_attendance_data(attendance_data)
+        attendance.input_attendance_data("attendance_weekday_500.txt")
 
         attendance.manage_players()
 

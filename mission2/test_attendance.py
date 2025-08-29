@@ -75,11 +75,13 @@ def test_input_attendance_data(mocker: MockerFixture):
     attendance = Attendance()
     input_data = ["Umar monday", "Daisy tuesday", "Alice tuesday"]
     mocked_player = mock.Mock(spec=Player)
+    mocked_open_input_file = mocker.patch("attendance.Attendance.open_input_file", return_value=input_data)
     mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
     mocker.patch("player.Player.attend")
 
-    attendance.input_attendance_data(input_data)
+    attendance.input_attendance_data("example.txt")
 
+    mocked_open_input_file.assert_called_once()
     assert mocked_get_player.call_count == len(input_data)
     mocked_get_player.assert_has_calls([call(name="Umar"), call(name="Daisy"), call(name="Alice")])
     assert mocked_player.attend.call_count == len(input_data)
@@ -91,12 +93,15 @@ def test_input_attendance_wrong_data(mocker: MockerFixture):
     attendance = Attendance()
     input_data = ["Umar monday", "Daisy", "Alice tuesday"]
     mocked_player = mock.Mock(spec=Player)
+    mocked_open_input_file = mocker.patch("attendance.Attendance.open_input_file", return_value=input_data)
     mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
     mocker.patch("player.Player.attend")
 
-    attendance.input_attendance_data(input_data)
+    attendance.input_attendance_data("example.txt")
 
+    mocked_open_input_file.assert_called_once()
     assert mocked_get_player.call_count == len(input_data) - 1
     mocked_get_player.assert_has_calls([call(name="Umar"), call(name="Alice")])
     assert mocked_player.attend.call_count == len(input_data) - 1
     mocked_player.attend.assert_has_calls([call(attendance_day="monday"), call(attendance_day="tuesday")])
+
