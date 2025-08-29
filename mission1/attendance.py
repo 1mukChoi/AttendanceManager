@@ -1,24 +1,19 @@
 member_index_dict = {}
 member_list = []
-last_member_id = 0
 
 
 def add_member(name):
-    global last_member_id
-    last_member_index = last_member_id
-    member_index_dict[name] = last_member_index
+    new_member_index = len(member_list)
+    new_member_id = new_member_index + 1
 
-    new_member_id = last_member_id + 1
-    new_member = {}
-    new_member["name"] = name
-    new_member["id"] = new_member_id
-    new_member["grade"] = 0
-    new_member["points"] = 0
-    new_member["attend_num_wednesday"] = 0
-    new_member["attend_num_weekend"] = 0
+    member_index_dict[name] = new_member_index
+    new_member = {"name": name,
+                  "id": new_member_id,
+                  "grade": 0,
+                  "points": 0,
+                  "attend_num_wednesday": 0,
+                  "attend_num_weekend": 0}
     member_list.append(new_member)
-
-    last_member_id  = new_member_id
 
 
 def get_member(name):
