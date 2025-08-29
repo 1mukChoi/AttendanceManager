@@ -12,7 +12,7 @@ def test_member_init(make_member):
     assert member.name == "Kevin"
     assert member.id == Player.LAST_ID
     assert member._points == 0
-    assert member.grade == "NORMAL"
+    assert member._grader.grade == "NORMAL"
     assert member.attend_num_wednesday == 0
     assert member.attend_num_weekend == 0
 
@@ -34,8 +34,8 @@ def test_update_grade(make_member, points, grade, mocker: MockerFixture):
 
     member.update_grade()
 
-    assert member.grade == grade
-    mocked_print.assert_called_with(f"NAME : {member.name}, POINT : {member.total_points}, GRADE : {member.grade}")
+    assert member._grader.grade == grade
+    mocked_print.assert_called_with(f"NAME : {member.name}, POINT : {member.total_points}, GRADE : {member._grader.grade}")
     mocked_check_bonus_points.assert_called_once()
 
 
@@ -57,12 +57,12 @@ def test_total_points(make_member, points, bonus_points, total_points):
 
     assert member.total_points == total_points
 
-@pytest.mark.parametrize("grade, attend_num_wednesday, attend_num_weekend, result", [("GOLD", 0, 0, False), ("GOLD", 10, 0, False), ("GOLD", 0, 10, False), ("GOLD", 10, 10, False),
-                                                                                     ("SILVER", 0, 0, False), ("SILVER", 10, 0, False), ("SILVER", 0, 10, False), ("SILVER", 10, 10, False),
-                                                                                     ("NORMAL", 0, 0, True), ("NORMAL", 10, 0, False), ("NORMAL", 0, 10, False), ("NORMAL", 10, 10, False)])
-def test_is_player_removed(make_member, grade, attend_num_wednesday, attend_num_weekend, result):
+@pytest.mark.parametrize("is_removed_grade, attend_num_wednesday, attend_num_weekend, result", [(False, 0, 0, False), (False, 10, 0, False), (False, 0, 10, False), (False, 10, 10, False),
+                                                                                                (False, 0, 0, False), (False, 10, 0, False), (False, 0, 10, False), (False, 10, 10, False),
+                                                                                                (True, 0, 0, True), (True, 10, 0, False), (True, 0, 10, False), (True, 10, 10, False)])
+def test_is_player_removed(make_member, is_removed_grade, attend_num_wednesday, attend_num_weekend, result, mocker: MockerFixture):
     member = make_member
-    member.grade = grade
+    mocker.patch("grader.GraderNormal.is_removed", return_value=is_removed_grade)
     member.attend_num_wednesday = attend_num_wednesday
     member.attend_num_weekend = attend_num_weekend
 

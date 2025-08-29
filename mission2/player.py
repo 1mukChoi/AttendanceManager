@@ -1,3 +1,6 @@
+from grader import GraderBase, GraderNormal
+
+
 class Player:
     LAST_ID = 0
 
@@ -7,9 +10,12 @@ class Player:
         self.id = Player.LAST_ID
         self._points = 0
         self._bonus_points = 0
-        self.grade = "NORMAL"
+        self._grader: GraderBase = self._get_grader()
         self.attend_num_wednesday = 0
         self.attend_num_weekend = 0
+
+    def _get_grader(self):
+        return GraderNormal()
 
     def attend(self, attendance_day):
         if attendance_day == "wednesday":
@@ -27,14 +33,9 @@ class Player:
     def update_grade(self):
         self._check_bonus_points()
 
-        if self.total_points >= 50:
-            self.grade = "GOLD"
-        elif self.total_points >= 30:
-            self.grade = "SILVER"
-        else:
-            self.grade = "NORMAL"
+        self._grader.set_grade(self.total_points)
 
-        print(f"NAME : {self.name}, POINT : {self.total_points}, GRADE : {self.grade}")
+        print(f"NAME : {self.name}, POINT : {self.total_points}, GRADE : {self._grader.grade}")
 
     def _check_bonus_points(self):
         self._bonus_points = 0
@@ -51,7 +52,7 @@ class Player:
         return self._total_points()
 
     def is_player_removed(self):
-        if self.grade in ("GOLD", "SILVER"):
+        if not self._grader.is_removed():
             return False
         if self.attend_num_wednesday != 0:
             return False
