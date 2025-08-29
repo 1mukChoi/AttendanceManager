@@ -7,6 +7,7 @@ from pytest_mock import MockerFixture
 from attendance import Attendance
 from player import Player
 
+
 @pytest.fixture
 def basic_attendance():
     name_list = ["Kevin", "Sunny", "James", "Steven"]
@@ -14,6 +15,7 @@ def basic_attendance():
     for name in name_list:
         attendance.add_player(name)
     return attendance
+
 
 def test_init():
     attendance = Attendance()
@@ -51,6 +53,7 @@ def test_get_new_player():
     assert len(attendance.player_list) == 1
     assert attendance.player_index_dict == {"Kevin": 0}
 
+
 def test_manage_players(basic_attendance, mocker: MockerFixture):
     attendance = basic_attendance
     mocked_update_grade = mocker.patch("player.Player.update_grade")
@@ -66,3 +69,34 @@ def test_manage_players(basic_attendance, mocker: MockerFixture):
                                    call("=============="),
                                    call(f"{attendance.player_list[0].name}"),
                                    ])
+
+
+def test_input_attendance_data(mocker: MockerFixture):
+    attendance = Attendance()
+    input_data = ["Umar monday", "Daisy tuesday", "Alice tuesday"]
+    mocked_player = mock.Mock(spec=Player)
+    mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
+    mocker.patch("player.Player.attend")
+
+    attendance.input_attendance_data(input_data)
+
+    assert mocked_get_player.call_count == len(input_data)
+    mocked_get_player.assert_has_calls([call(name="Umar"), call(name="Daisy"), call(name="Alice")])
+    assert mocked_player.attend.call_count == len(input_data)
+    mocked_player.attend.assert_has_calls(
+        [call(attendance_day="monday"), call(attendance_day="tuesday"), call(attendance_day="tuesday")])
+
+
+def test_input_attendance_wrong_data(mocker: MockerFixture):
+    attendance = Attendance()
+    input_data = ["Umar monday", "Daisy", "Alice tuesday"]
+    mocked_player = mock.Mock(spec=Player)
+    mocked_get_player = mocker.patch("attendance.Attendance.get_player", return_value=mocked_player)
+    mocker.patch("player.Player.attend")
+
+    attendance.input_attendance_data(input_data)
+
+    assert mocked_get_player.call_count == len(input_data) - 1
+    mocked_get_player.assert_has_calls([call(name="Umar"), call(name="Alice")])
+    assert mocked_player.attend.call_count == len(input_data) - 1
+    mocked_player.attend.assert_has_calls([call(attendance_day="monday"), call(attendance_day="tuesday")])
