@@ -30,33 +30,17 @@ def check_attendance(name, attendance_day):
 
 
 def add_attendance_points(attendance_day, member):
-    add_point = 0
-    index = 0
-    if attendance_day == "monday":
-        index = 0
-        add_point += 1
-    elif attendance_day == "tuesday":
-        index = 1
-        add_point += 1
-    elif attendance_day == "wednesday":
-        index = 2
-        add_point += 3
+    if attendance_day == "wednesday":
+        member["points"] += 3
         member["attend_num_wednesday"] += 1
-    elif attendance_day == "thursday":
-        index = 3
-        add_point += 1
-    elif attendance_day == "friday":
-        index = 4
-        add_point += 1
     elif attendance_day == "saturday":
-        index = 5
-        add_point += 2
+        member["points"] += 2
         member["attend_num_weekend"] += 1
     elif attendance_day == "sunday":
-        index = 6
-        add_point += 2
+        member["points"] += 2
         member["attend_num_weekend"] += 1
-    member["points"] += add_point
+    else:
+        member["points"] += 1
 
 
 def check_bonus_points():
