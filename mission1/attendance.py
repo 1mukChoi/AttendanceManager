@@ -63,39 +63,37 @@ def add_attendance_points(attendance_day, member_id):
     member_list[member_list_index]["points"] += add_point
 
 
-def check_bonus_points(member_id):
-    member_list_index = member_id - 1
-    if member_list[member_list_index]["attend_num_wednesday"] > 9:
-        member_list[member_list_index]["points"] += 10
-    if member_list[member_list_index]["attend_num_weekend"] > 9:
-        member_list[member_list_index]["points"] += 10
+def check_bonus_points():
+    for member in member_list:
+        if member["attend_num_wednesday"] > 9:
+            member["points"] += 10
+        if member["attend_num_weekend"] > 9:
+            member["points"] += 10
 
 
-def get_grade(member_id):
-    member_list_index = member_id - 1
-    if member_list[member_list_index]["points"] >= 50:
-        member_list[member_list_index]["grade"] = "GOLD"
-    elif member_list[member_list_index]["points"] >= 30:
-        member_list[member_list_index]["grade"] = "SILVER"
-    else:
-        member_list[member_list_index]["grade"] = "NORMAL"
+def get_grade():
+    for member in member_list:
+        if member["points"] >= 50:
+            member["grade"] = "GOLD"
+        elif member["points"] >= 30:
+            member["grade"] = "SILVER"
+        else:
+            member["grade"] = "NORMAL"
 
-    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {member_list[member_list_index]["points"]}, GRADE : {member_list[member_list_index]["grade"]}")
+        print(f"NAME : {member["name"]}, POINT : {member["points"]}, GRADE : {member["grade"]}")
 
 
 def remove_player():
     print("\nRemoved player")
     print("==============")
-    for member_id in range(1, last_member_id + 1):
-        member_list_index = member_id - 1
-        if member_list[member_list_index]["grade"] in ("GOLD", "SILVER"):
+    for member in member_list:
+        if member["grade"] in ("GOLD", "SILVER"):
             continue
-        if member_list[member_list_index]["attend_num_wednesday"] != 0:
+        if member["attend_num_wednesday"] != 0:
             continue
-        if member_list[member_list_index]["attend_num_weekend"] != 0:
+        if member["attend_num_weekend"] != 0:
             continue
-        member_list_index = member_id - 1
-        print(member_list[member_list_index]["name"])
+        print(member["name"])
 
 
 def input_attendance_data(read_data):
@@ -122,12 +120,12 @@ def open_input_file():
 def main():
     try:
         attendance_data = open_input_file()
+
         input_attendance_data(attendance_data)
 
-        for member_id in range(1, last_member_id + 1):
-            check_bonus_points(member_id)
+        check_bonus_points()
 
-            get_grade(member_id)
+        get_grade()
 
         remove_player()
 
