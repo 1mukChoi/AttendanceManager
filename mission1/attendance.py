@@ -2,9 +2,6 @@ member_dict = {}
 member_list = []
 last_member_id = 0
 
-# dat[사용자ID][요일]
-dat = [[0] * 100 for _ in range(100)]
-
 
 def add_member(name):
     global last_member_id
@@ -61,15 +58,14 @@ def add_attendance_points(attendance_day, member_id):
         index = 6
         add_point += 2
         member_list[member_list_index]["attend_num_weekend"] += 1
-    dat[member_id][index] += 1
     member_list[member_list_index]["points"] += add_point
 
 
 def check_bonus_points(member_id):
     member_list_index = member_id - 1
-    if dat[member_id][2] > 9:
+    if member_list[member_list_index]["attend_num_wednesday"] > 9:
         member_list[member_list_index]["points"] += 10
-    if dat[member_id][5] + dat[member_id][6] > 9:
+    if member_list[member_list_index]["attend_num_weekend"] > 9:
         member_list[member_list_index]["points"] += 10
 
 
