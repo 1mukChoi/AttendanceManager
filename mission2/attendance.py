@@ -21,14 +21,6 @@ class Attendance:
         return self.member_list[self.member_index_dict[name]]
 
 
-    def check_bonus_points(self):
-        for member in self.member_list:
-            if member.attend_num_wednesday > 9:
-                member.points += 10
-            if member.attend_num_weekend > 9:
-                member.points += 10
-
-
     def get_grade(self):
         for member in self.member_list:
             member.update_grade()
@@ -55,7 +47,6 @@ class Attendance:
             member = self.get_member(name=parts[0])
             member.attend(attendance_day=parts[1])
 
-        self.check_bonus_points()
 
 def open_input_file():
     read_file = []
