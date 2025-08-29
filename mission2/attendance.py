@@ -7,10 +7,10 @@ class Attendance:
         self.member_list: list[Member] = []
 
     def add_member(self, name):
+        new_member = Member(name)
         new_member_index = len(self.member_list)
 
         self.member_index_dict[name] = new_member_index
-        new_member = Member(name)
         self.member_list.append(new_member)
 
 
@@ -19,20 +19,6 @@ class Attendance:
             self.add_member(name)
 
         return self.member_list[self.member_index_dict[name]]
-
-
-    def add_attendance_points(self, member, attendance_day):
-        if attendance_day == "wednesday":
-            member.points += 3
-            member.attend_num_wednesday += 1
-        elif attendance_day == "saturday":
-            member.points += 2
-            member.attend_num_weekend += 1
-        elif attendance_day == "sunday":
-            member.points += 2
-            member.attend_num_weekend += 1
-        else:
-            member.points += 1
 
 
     def check_bonus_points(self):
@@ -75,7 +61,7 @@ class Attendance:
                 continue
 
             member = self.get_member(name=parts[0])
-            self.add_attendance_points(member, attendance_day=parts[1])
+            member.attend(attendance_day=parts[1])
 
         self.check_bonus_points()
 

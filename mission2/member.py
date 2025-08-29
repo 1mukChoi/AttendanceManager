@@ -8,3 +8,16 @@ class Member:
         self.grade = "NORMAL"
         self.attend_num_wednesday = 0
         self.attend_num_weekend = 0
+
+    def attend(self, attendance_day):
+        if attendance_day == "wednesday":
+            self.points += 3
+            self.attend_num_wednesday += 1
+        elif attendance_day == "saturday":
+            self.points += 2
+            self.attend_num_weekend += 1
+        elif attendance_day == "sunday":
+            self.points += 2
+            self.attend_num_weekend += 1
+        else:
+            self.points += 1
