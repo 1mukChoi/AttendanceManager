@@ -6,7 +6,6 @@ last_member_id = 0
 dat = [[0] * 100 for _ in range(100)]
 points = [0] * 100
 grade = [0] * 100
-member_names = [''] * 100
 attend_num_wednesday = [0] * 100
 attend_num_weekend = [0] * 100
 
@@ -22,7 +21,6 @@ def add_member(name):
     new_member["attend_wednesday"] = 0
     new_member["attend_weekend"] = 0
     member_list.append(new_member)
-    member_names[last_member_id] = name
 
 
 def get_member_id(name):
@@ -84,7 +82,8 @@ def get_grade(member_id):
     else:
         grade[member_id] = 0
 
-    print(f"NAME : {member_names[member_id]}, POINT : {points[member_id]}, GRADE : ", end="")
+    member_list_index = member_id - 1
+    print(f"NAME : {member_list[member_list_index]["name"]}, POINT : {points[member_id]}, GRADE : ", end="")
 
     if grade[member_id] == 1:
         print("GOLD")
@@ -104,7 +103,8 @@ def remove_player():
             continue
         if attend_num_weekend[member_id] != 0:
             continue
-        print(member_names[member_id])
+        member_list_index = member_id - 1
+        print(member_list[member_list_index]["name"])
 
 
 def open_input_file():
